@@ -1,49 +1,45 @@
 #include "ush.h"
 
-static void tokenspace(char *line, char ***tokens, int bufsize, int position) {
+static void auditor(int *bufsize, char ****toks) {
+    (*bufsize) += 64;
+    **toks = realloc((**toks), (*bufsize) * sizeof(char *));
+    if (!(**toks)) {
+        fprintf(stderr, "u$h: allocation error\n");
+        exit(EXIT_FAILURE);
+    }
+}
+
+static void tokensize(char *line, char ***toks, int bufsize, int position) {
     char *token = NULL;
+    char *line_cp = mx_strtrim(line);
+    int check = 0;
 
-    token = strtok(line, " ");
-    while (token != NULL) {
-        if (token[0] == '\n' && token[1] == '\0') {
-            token = strtok(NULL, " ");
-            continue;
-        }
-        (*tokens)[position++] = mx_strtrim(token); // check for escape space;
-        if (position >= bufsize) {
-            bufsize += 64;
-            *tokens = realloc(tokens, bufsize * sizeof(char*));
-            if (!(*tokens)) {
-                fprintf(stderr, "u$h: allocation error\n");
-                exit(EXIT_FAILURE);
-            }
-        }
-        token = strtok(NULL, " ");
+    check = mx_check_quotes(&line_cp[check], ' ');
+    while (check > 0 && check != 100) {
+        token = mx_strndup(line_cp, check);
+        line_cp = mx_strdup(line_cp + check + 1);
+        if (check > 0)
+            (*toks)[position++] = mx_trim_token(token);
+        if (position >= bufsize)
+            auditor(&bufsize, &toks);
+        check = mx_check_quotes(line_cp, ' ');
     }
-    (*tokens)[position] = NULL;
+    if (check == -1)
+        return;
+    else if (check == 100)
+        (*toks)[position] = mx_strdup(mx_trim_token(line_cp));
+    else if ((*toks)) {
+        mx_strdel(&line); mx_strdel(&line_cp);
+    }      
+
+    
 }
 
-static char **create_arr_cmd(char **command, int index) {
-    char **cmd = NULL;
-    int count = 0;
-    int i = index;
-    int n = 0;
+st_launch *mx_launch_init(char *cmd, t_shell *shell) {
+    if (shell) {
 
-    if (index >= 0) {
-        for (; command[i]; i++)
-            count++;
-        cmd = malloc((count + 1) * sizeof(char *));
-        for (i = index; command[i]; i++) {
-            cmd[n++] = mx_strdup(command[i]);
-        }
-        cmd[n] = NULL;
     }
-    return cmd;
-}
-
-st_launch *mx_launch_init(char *cmd) {
-    int index = -1;
-    // int ex;
+    //int index = -1;
     st_launch *l_inf = malloc(sizeof(st_launch));
     l_inf->filepath = NULL;
     l_inf->cmd_arr = NULL;
@@ -52,26 +48,25 @@ st_launch *mx_launch_init(char *cmd) {
     char **command = NULL;
     
     command = malloc(64 * sizeof(char *));
-
-//create_arr_args
-    tokenspace(cmd, &command, 64, 0);
-
-    if (command[0] != NULL) {
-        index = mx_index_cmd(command);
-        // if (index == -1) 
-            // mx_create_param (&st_launch->par);
-        l_inf->cmd_arr = create_arr_cmd(command, index);
+// exp params
+    cmd = mx_ex_param(cmd); // &
+    if (!cmd) {
+        mx_printerr("error param ${}\n");
+        return NULL;
     }
+// create_arr_args
+    tokensize(cmd, &command, 64, 0);
+    l_inf->cmd_arr = command;
 //find cmd
     if (l_inf->cmd_arr) {
-        if ((l_inf->type = mx_check_builtin(l_inf->cmd_arr)) == 1)
+        if ((l_inf->type = mx_check_builtin(l_inf->cmd_arr, shell)) == 1) // 1 = builtin
             return l_inf;
         else if ((l_inf->type = mx_find_filepath(l_inf->cmd_arr, &l_inf->filepath)) == 2)
             return l_inf;
         else {
             mx_printerr("ush: command ");
             mx_printerr(l_inf->cmd_arr[0]);
-            mx_printerr("not found\n");
+            mx_printerr(" not found\n");
         }
     }
     return NULL;

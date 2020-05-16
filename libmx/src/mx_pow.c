@@ -1,14 +1,16 @@
 #include "libmx.h"
 
 double mx_pow(double n, unsigned int pow) {
-	double temp;
+	double i  = 0;
+	double sum = 1;
 
-    if (pow <= 0) {
-        return 1;
-    }
-    temp = n;
-    for(;pow-1 > 0; --pow) {
-        n *= temp;
-    }
-    return n;
+	if(pow == 1) 
+		return n;
+	
+	while (i < pow) {
+		sum = sum * n;
+		i++;		
+	}
+		return sum;
 }
+

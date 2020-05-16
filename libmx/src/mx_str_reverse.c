@@ -1,11 +1,15 @@
 #include "libmx.h"
 
 void mx_str_reverse(char *s) {
-	int j = mx_strlen(s) - 1;
-	
-	for (int i = 0; i < mx_strlen(s)/2; i++, j--) {
-		char temp = s[i];
-		s[i] = s[j];
-		s[j] = temp;
+	int i = mx_strlen(s) - 1;
+
+	if (s == NULL) 
+		return;
+
+	for (int o = 0; i > o; i--) {
+		char k = s[o];
+		s[o] = s[i];
+		s[i] = k;
+		o++;
 	}
 }

@@ -1,10 +1,9 @@
-#include "libmx.h"
-
-char *mx_strchr(const char *str, int ch) {
-	while(*str) {
-		if (*str == ch)
-			return (char*)str;
-		str++;
-	}
+ #include "libmx.h"
+char* mx_strchr(const char *s, int c) {
+	while (*s) {
+		if (*s == c) 
+			return (char *)(s);
+		s++;
+		}
 	return NULL;
 }

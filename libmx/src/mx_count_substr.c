@@ -2,10 +2,22 @@
 
 int mx_count_substr(const char *str, const char *sub) {
 	int count = 0;
+	int j = 0;
 
 	if (!str || !sub)
 		return -1;
-	for (str = mx_strstr(str,sub); str; str = mx_strstr(str + 1, sub))
-		count++;
+
+	for (int i = 0; str[i] != '\0';	i++) {
+		j = 0;
+		while (str[i] == sub[j] && sub[j] != '\0') {
+				i++;
+				j++;
+			}
+			if (sub[j++] == '\0') {
+				count++; 
+				i--;
+			}
+		}
 	return count;
 }
+

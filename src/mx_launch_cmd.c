@@ -1,31 +1,35 @@
 #include "ush.h"
 
-static int mx_launch_menu(char *cmd) {
-    st_launch *l_inf = mx_launch_init(cmd); // create cmd_arr // create param_arr // find type // find filepath 
-    int status = 0;
-
+static void mx_launch_menu(char *cmd, t_shell *shell) {
+    st_launch *l_inf = mx_launch_init(cmd, shell); // create cmd_arr // create param_arr // find type // find filepath // exp param
     if (l_inf) {
         if (l_inf->type == 1 || l_inf->type == 2)
-            status = mx_launcher(l_inf);
-    }
-    else
-        status = 127; // echo $?;
-    return status;
+            mx_start(l_inf, shell);
+        }
+        else
+        shell->status = 127; // echo $?;
 }
 
-void mx_launch_cmd(t_li *forest) {
-    int status;
-
+void mx_launch_cmd(t_head *forest, t_shell *shell) {
     while(forest) {
         while (forest->command) {
             if (forest->command->cmd)
-                status = mx_launch_menu(forest->command->cmd); // LAUNCHING CMD
-            if (forest->command->or != NULL && status != 0) {
+                mx_launch_menu(forest->command->cmd, shell); // LAUNCHING CMD
+            if (forest->command->or != NULL && shell->status != 0) {
                 forest->command = forest->command->or;
-                continue;
+               continue;
             }
-            else if (status == 0) {
-                forest->command = forest->command->and;
+            else if (shell->status == 0) {
+                if (forest->command->and && !forest->command->or)
+                    forest->command = forest->command->and;
+                else if (!forest->command->and && forest->command->or) {
+                    while (forest->command && !forest->command->and)
+                        forest->command = forest->command->or;
+                    if (forest->command)
+                        forest->command = forest->command->and;
+                }
+                else if (!forest->command->and && !forest->command->or)
+                    forest->command = NULL;
                 continue;
             }
             else

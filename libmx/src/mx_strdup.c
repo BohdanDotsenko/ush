@@ -1,15 +1,14 @@
 #include "libmx.h"
 
-char *mx_strdup(const char *str) {
-	if (str) {
-		int len = mx_strlen(str);
-		char *target = mx_strnew(len);
+char *mx_strcpy(char *dst, const char *src);
+int mx_strlen(const char *s);
+char *mx_strnew(const int size);
 
-		for (int i = 0; i < len; i++) {
-			target[i] = str[i];
-			target[i+1] = '\0';
-		}
-		return target;
-	}
-	return NULL;
+char *mx_strdup(const char *str) {
+	int size = mx_strlen(str);
+
+	char *st = mx_strnew(size);
+	
+	return mx_strcpy(st, str);
 }
+
