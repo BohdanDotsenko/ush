@@ -1,5 +1,5 @@
 NAME	=	ush
-CFLG	=	-std=c11 -Wall -Wextra -Werror -Wpedantic -g
+CFLG	=	-std=c11 -Wall -Wextra -Werror -Wpedantic -g -fsanitize=address -fsanitize=undefined
 COMP	=	clang
 SRCD	=	src
 INCD	=	inc

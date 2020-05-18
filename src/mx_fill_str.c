@@ -8,9 +8,13 @@ static void fill_str(char **tok, int *i, char ***tmp, int *j) {
 }
 
 static char **get_null(char **tok, char **tmp, int j, int i) {
-    tmp[j] = mx_strndup((*tok), i);
-    tmp[j+1] = NULL;
-    return tmp;
+    if (*tok != NULL) {
+        tmp[j] = mx_strndup((*tok), i);
+        tmp[j+1] = NULL;
+        return tmp;
+    }
+    else 
+        return NULL;
 }
 
 char **mx_fill_str(char *tok, int count) {

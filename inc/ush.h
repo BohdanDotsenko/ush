@@ -8,7 +8,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <dirent.h>
-#include <iostream>
+// #include <iostream>
 
 #define BUFSIZE 1024
 

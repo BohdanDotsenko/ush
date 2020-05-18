@@ -12,7 +12,7 @@ void mx_loop(t_head *head) {
     int status = 0;
     t_shell *shell = (t_shell *)malloc(sizeof(t_shell));
 
-    mx_init_shell(shell);
+    // mx_init_shell(shell);
     while (1) {
         mx_printstr("u$h> ");
         line = read_line(); 
