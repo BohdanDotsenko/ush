@@ -18,15 +18,28 @@ static void tokensize(char *line, char ***toks, int bufsize, int position) {
     while (check > 0 && check != 100) {
         token = mx_strndup(line_cp, check);
         line_cp = mx_strdup(line_cp + check + 1);
-        if (check > 0)
+        if (check > 0) { /////
+
+        token = mx_ex_param(token); // &
+        if (!token) {
+            mx_printerr("error param ${}\n");
+        }
             (*toks)[position++] = mx_trim_token(token);
+
+        }///
         if (position >= bufsize)
             auditor(&bufsize, &toks);
+        // mx_printstr(token); mx_printstr("\n"); /// 
         check = mx_check_quotes(line_cp, ' ');
     }
+    
     if (check == -1)
         return;
     else if (check == 100) {
+       line_cp = mx_ex_param(line_cp); // &
+       if (!line_cp) {
+           mx_printerr("error param ${}\n");
+       }
         (*toks)[position] = mx_strdup(mx_trim_token(line_cp));
     }
     else if ((*toks))
@@ -43,12 +56,6 @@ st_launch *mx_launch_init(char *cmd, t_shell *shell) {
     l_inf->par = NULL;
     char **command = NULL;
     command = malloc(64 * sizeof(char *));
-// exp params
-    cmd = mx_ex_param(cmd); // &
-    if (!cmd) {
-        mx_printerr("error param ${}\n");
-        return NULL;
-    }
 // create_arr_args
     tokensize(cmd, &command, 64, 0);
     mx_open_doll_trim_quotes(&command);

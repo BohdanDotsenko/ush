@@ -11,19 +11,19 @@ static void check_dollar(char *str, int *kk) {
         (*kk) += 1;
 }
 
-static char *trim_dquotes(const char *str) {
+static char *trim_dquotes(const char *str, char delim) {
     int begin = 0;
     int end = 0;
     char *result = NULL;
 
     if (str == NULL)
         return NULL;
-    for (begin = 0; str[begin] == '"' && str[begin] != '\0'; begin++)
+    for (begin = 0; str[begin] == delim && str[begin] != '\0'; begin++)
     ;
-    for (end = mx_strlen(str);end > 0 && str[end - 1] == '"'; end--)
+    for (end = mx_strlen(str);end > 0 && str[end - 1] == delim; end--)
     ;
 
-    for (int i = 0; str[i] == '"'; i++) {
+    for (int i = 0; str[i] == delim; i++) {
         if (str[i + 1] == '\0')
             return NULL;
     }
@@ -34,9 +34,29 @@ static char *trim_dquotes(const char *str) {
 
 void mx_open_doll_trim_quotes(char ***command) {
     int kk = 0;
+    char *str;
 
-    for (int k = 0; (*command)[k]; k++) {
-        char *str = mx_strtrim((trim_dquotes((*command)[k])));
+    // for (int k = 0; (*command)[k]; k++) {
+    //     int flag = 0;
+    //     if (flag == 0 && mx_strtrim((trim_dquotes((*command)[k], '"')))) {
+    //         str = mx_strtrim((trim_dquotes((*command)[k], '"')));
+    //         flag += 1;
+    //     }
+    //     else {
+    //         str = mx_strtrim((trim_dquotes((*command)[k], '\'')));
+    //     }
+
+     for (int k = 0; (*command)[k]; k++) {
+        if ((*command)[k][0] && (*command)[k][0] == '\'' && mx_strtrim((trim_dquotes((*command)[k], '\'')))) {
+            str = mx_strtrim((trim_dquotes((*command)[k], '\'')));
+        }
+        else {
+            str = mx_strtrim((trim_dquotes((*command)[k], '"')));
+        }
+
+
+
+
         mx_strdel(&(*command)[k]);
         kk = 0;
         check_dollar(str, &kk);

@@ -51,10 +51,14 @@ static char *len_par(char *line, int *len) {
             while (line[i] && line[i] != '}')
                 i++;
             if (line[i] && line[i] == '}') {
-                (*len) -= i - beg - 3;
+                (*len) -= i - beg - 3;//
                 param = open_braces(line, beg, i);
                 if (param && getenv(param))
                     (*len) += mx_strlen(getenv(param));
+                else if (!getenv(param)) {
+                    //char *tt = mx_strdup(line[mx_strlen(param) + i]);
+                    continue;
+                }
                 else 
                     return NULL;
             }
@@ -69,12 +73,17 @@ static void ex_join(char *line, char *old_str, char **new_str) {
 
     for (int y = 0; line[y]; y++) {
         if (line[y+1] && line[y] == '$' && line[y+1] == '{') {
-            mx_printstr("Hello\n");
             cup = getenv(old_str);
             if (cup != NULL) {
                 for (int j = 0; cup[j]; j++)
                     (*new_str)[i++] = cup[j];
                 y += mx_strlen(old_str) + 2;
+            }
+            else if (!cup && line[mx_strlen(old_str)] != '\0') {
+                char *pp = mx_strdup(&line[mx_strlen(old_str) + 2]);
+                mx_strdel(&line);
+                line = mx_strdup(pp);
+                continue;
             }
         }
         else if (line[y]) {
@@ -85,18 +94,18 @@ static void ex_join(char *line, char *old_str, char **new_str) {
 
 char *mx_ex_param(char *line) {
     char *res = NULL;
-    int len = mx_strlen(line);
+    int len = mx_strlen(line) + 1;
     int count = count_par(line);
     char *result = NULL;
 
     if (count > 0) {
         result = len_par(line, &len);
         if (result) {
-            res = mx_strnew(len);
+            res = mx_strnew(len + 1);
             ex_join(line, result, &res);
         }
     }
-    else if (count == -1) {                              // echo ${SHLVL} ${HOME} ${LOGNAME} ${USR} ${TERM} ; exit
+    else if (count == -1) {            // echo ${SHLVL} ${HOME} ${LOGNAME} ${USR} ${TERM} ; exit
         mx_strdel(&line);
         return NULL;
     }

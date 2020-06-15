@@ -1,14 +1,16 @@
 #include "ush.h"
 
-/* 
-/ Deleted all checks due to auditor
-*/ 
+// TODO: fix auditor, delete error handling if needed
 static void flag_parser(int argc, char **argv, bool *flags, int *i) {
     regex_t preg;
+    int rc = 0;
     
-    regcomp(&preg, "^-[nEe]+$", REG_EXTENDED);
+    if (0 != (rc = regcomp(&preg, "^-[nEe]+$", REG_EXTENDED))) {
+        printf("regcomp() failed, returning nonzero (%d)\n", rc);
+        exit(rc); // TODO exit function;
+    }
     for (; *i < argc; (*i)++) {
-        if (0 == (regexec(&preg, argv[*i], 0, NULL, 0))) {
+        if (0 == (rc = regexec(&preg, argv[*i], 0, NULL, 0))) {
             for (int j = 1; argv[*i][j] != '\0'; j++) {
                 if (argv[*i][j] == 'n')
                   flags[0] = true; 
@@ -16,17 +18,37 @@ static void flag_parser(int argc, char **argv, bool *flags, int *i) {
                   flags[1] = true; 
                 else if(argv[*i][j] == 'e')
                   flags[2] = true; 
+                else {
+                    regfree(&preg);
+                    return;
                 }
             } 
+        }
+        else if (rc != REG_NOMATCH) {
+            printf("regcomp() failed with '%d'\n", rc);
+            exit(rc);
+        }
         else 
             break;
     }
-    if (flags[1] == false && flags[2] == false)
-        flags[1] = true;
     regfree(&preg);
 }
 
-static void replace_backslash_char(char c, int *j) {
+static bool is_backslash_char(char c) {
+    if (c > 97 && c < 102)
+        return true;
+    else if (c == 'n')
+        return true;
+    else if (c == 'r')
+        return true;
+    else if (c == 't')
+        return true;
+    else if (c == 'v')
+        return true;
+    return false;
+}
+
+static void replace_backslash_char(char c) {
     if (c == '\\') 
         mx_printchar('\\');
     else if (c == 'a') 
@@ -45,7 +67,6 @@ static void replace_backslash_char(char c, int *j) {
         mx_printchar('\t');
     else if (c == 'v') 
         mx_printchar('\v');
-    *j += 1;    
 }
 
 static void print_octal(const char *str, int *j) {
@@ -79,14 +100,13 @@ static void print_hex(const char *str, int *j) {
     (*j)--; // high level loop will increment value again, rewrite this shit
 }
 
-
-
 static void print_flag_e(int argc, int i, char **argv) {
-    for (; i < argc; i++) { 
-        for (int j = 0; argv[i] && argv[i][j] != '\0'; j++) {
-            if (argv[i][j] == '\\') { 
+    for (; i < argc; i++) {
+        for (int j = 0; argv[i][j] != '\0'; j++) {
+            if (argv[i][j] == '\\') {
                 if (is_backslash_char(argv[i][j + 1]) == true) { 
-                    replace_backslash_char(argv[i][j + 1], &j);
+                    replace_backslash_char(argv[i][j + 1]);
+                    j++;
                     continue;
                 }
                 else if (argv[i][j + 1] == '0') {
@@ -100,31 +120,25 @@ static void print_flag_e(int argc, int i, char **argv) {
             }
             mx_printchar(argv[i][j]);
         }
-        if (argv[i + 1] && argv[i + 1][0] != '\0')
-            mx_printchar(' ');
+        mx_printchar(' ');
     }
 }
 
-int mx_echo(char **argv) { // to many functions in file
-    bool flags[3] = {false}; // 0 is -n, 1 is -E, 2 is -e
-    int i = 1;
-    int argc = 0;
-
-    if (argv && argv[1] && argv[1][0] == '?')
-        return mx_print_exit();
-    for (; argv[argc] != NULL; argc++);
+int main(int argc, char **argv) {
     if (argc < 2)
         return 0;
+    bool flags[3] = {false}; // 0 is -n, 1 is -E, 2 is -e
+    int i = 1;
+
     flag_parser(argc, argv, flags, &i);
-    if (flags[2] == true) 
+    if (flags[2] == true ||
+       (flags[0] == false && flags[1] == false && flags[2] == false))
         print_flag_e(argc, i, argv);
     else 
         while (i < argc) {
-            mx_printstr(argv[i++]);
-            if (i != argc)
-                mx_printchar(' ');
+            printf("%s ", argv[i++]);
         }
     if (flags[0] == false) 
-        mx_printchar('\n');
+        printf("\n");
     return 0;
 }
