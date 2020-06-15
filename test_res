@@ -5,8 +5,17 @@
 5. command = 'cd .. ; pwd ; exit'. res = 
 6. command = 'cd / ; pwd ; exit'. res = 
 7. command = 'cd ../../../ ; cd - ; cd .. ; pwd ; exit'. res = 1c1,2
-< /
-
+< /Users
+---
+> /Users/bdotsenko/Desktop/gitush/ush
+> /Users/bdotsenko/Desktop/gitush
+8. command = 'cd .. ; cd . ; pwd ; exit'. res = 
+9. command = 'cd /tmp ; pwd -L ; exit'. res = 
+10. command = 'cd /tmp ; pwd -P ; exit'. res = 
+11. command = 'cd .. ; echo /Users/bdotsenko/Desktop/gitush/ush ; exit'. res = 
+12. command = 'cd .. ; echo /Users/bdotsenko/Desktop/gitush/ush ; exit'. res = 
+13. command = 'echo 2 /Users/bdotsenko bdotsenko  xterm-256color ; exit'. res = 0a1
+> 2 /Users/bdotsenko bdotsenko xterm-256color
 14. command = 'cd ~ ; pwd ; exit'. res = 
 15. command = 'export UNIT=location; export UFK=p2p ucode=cbl; echo location p2p ucode; exit'. res = 
 16. command = 'export UNIT=location UFK=p2p ucode=cbl ; echo location p2p ucode ; unset UNIT UFK ucode ; echo location p2p ucode ; exit'. res = 

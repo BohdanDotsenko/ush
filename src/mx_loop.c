@@ -3,11 +3,8 @@
 static char *read_line(void) {
     char *tmp = NULL;
     size_t bufsize = 0;
-    int i = 0;
-    int rc;
 
     if (getline(&tmp, &bufsize, stdin) < 0) {
-        mx_printchar('\n');
         exit(0);
     }
     return tmp;

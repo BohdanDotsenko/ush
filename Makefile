@@ -1,6 +1,6 @@
 NAME	=	ush
-# CFLG	=	-std=c11 -Wall -Wextra -Werror -Wpedantic -g
-CFLG =	-std=c11 -Wall -Wextra -Werror -Wpedantic -g3 -fsanitize=address -fsanitize=undefined -Wno-unused-function -Wno-unused-parameter -Wno-unused-variable # Withou "unused" warning;
+CFLG	=	-std=c11 -Wall -Wextra -Werror -Wpedantic -g
+#CFLG =	-std=c11 -Wall -Wextra -Werror -Wpedantic -g3 -fsanitize=address -fsanitize=undefined -Wno-unused-function -Wno-unused-parameter -Wno-unused-variable # Withou "unused" warning;
 # CFLG =	-std=c11 -Wall -Wextra -Werror -Wpedantic -g -Wno-unused-function -Wno-unused-parameter -Wno-unused-variable #Withou "unused" warning; To use leaks command;
 COMP	=	clang
 SRCD	=	src
