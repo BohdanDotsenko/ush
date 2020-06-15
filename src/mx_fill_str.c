@@ -13,7 +13,7 @@ static char **get_null(char **tok, char **tmp, int j, int i) {
         tmp[j+1] = NULL;
         return tmp;
     }
-    else 
+    else
         return NULL;
 }
 
@@ -23,20 +23,26 @@ char **mx_fill_str(char *tok, int count) {
     int i = 0;
 
     for (; tok[i]; i++) {
-        if (tok[i] == '\\' && tok[i+1] != '\'')
-            i += 2;
+        if (tok[i] == '\\' && tok[i+1] == '\'') {
+            i += 1;
+            continue;
+        }
         if (tok[i] == '\'') 
             if (mx_cycle_for_quotes(tok, '\'', &i))
                 continue;
-        if (tok[i] == '\\' && tok[i+1] != '"')
-            i += 2;
+        if (tok[i] == '\\' && tok[i+1] == '"') {
+            i += 1;
+            continue;
+        }
         if (tok[i] == '"')
             if (mx_cycle_for_quotes(tok, '"', &i))
                 continue;
         if (tok[i] == '\\' && tok[i + 1] == '&')
             continue;
-        if (tok[i] == '&' && tok[i + 1] == '&')
+        if (tok[i] == '&' && tok[i + 1] == '&') {
             fill_str(&tok, &i, &tmp, &j);
+            i--;// new i += 2 in fill_str ===> new circle i++;
+        }
     }
     return get_null(&tok, tmp, j, i);
 }

@@ -17,7 +17,7 @@ char *mx_itoa(int number) {
     char *str_integer = NULL;
 
     if ((number != 0) && (number != -2147483648)) {
-        str_integer = mx_strnew(length);
+        str_integer = mx_strnew(length + 1);// new
         for (int i = 0; i < length; i++) {
             if (number < 0) {
                 str_integer[length] = '-';
@@ -27,6 +27,7 @@ char *mx_itoa(int number) {
             number /= 10;
         }
         mx_str_reverse(str_integer);
+        str_integer[mx_strlen(str_integer) + 1] = '\0'; // new
         return str_integer;
     }
     return (number == 0) ? mx_strdup("0") : mx_strdup("-2147483648");

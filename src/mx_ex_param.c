@@ -18,24 +18,27 @@ static int count_par(char *line) {
             if (line[i] && line[i] == '}')
                 count++;
             else
-                return -1;           
+                return -1;
         }
     }
     return count;
 }
 
-static char* arr_from_j_to_i(char *line, int beg, int end) {
+static char* open_braces(char *line, int beg, int end) {
     int len = end - beg;
-    char *res = mx_strnew(len);
-    char *result = NULL;
+    char *res = mx_strnew(len + 1);
+
+    //printf("len%d\n beg%d\n end%d\n", len, beg, end);
 
     for (int i = 0; i < len;)
         res[i++] = line[beg++];
-    result = mx_strtrim(res);
-    mx_strdel(&res);
-    if (mx_strlen(result) > 0)
-        return result;
-    return NULL;
+
+    if (mx_strlen(res) > 0)
+        return res;
+    else {
+        mx_strdel(&res);
+        return NULL;
+    }
 }
 
 static char *len_par(char *line, int *len) {
@@ -49,10 +52,11 @@ static char *len_par(char *line, int *len) {
                 i++;
             if (line[i] && line[i] == '}') {
                 (*len) -= i - beg - 3;
-                param = arr_from_j_to_i(line, beg, i);
-                if (param && getenv(param)) {
+                param = open_braces(line, beg, i);
+                if (param && getenv(param))
                     (*len) += mx_strlen(getenv(param));
-                }
+                else 
+                    return NULL;
             }
         }
      }
@@ -65,14 +69,17 @@ static void ex_join(char *line, char *old_str, char **new_str) {
 
     for (int y = 0; line[y]; y++) {
         if (line[y+1] && line[y] == '$' && line[y+1] == '{') {
+            mx_printstr("Hello\n");
             cup = getenv(old_str);
             if (cup != NULL) {
                 for (int j = 0; cup[j]; j++)
                     (*new_str)[i++] = cup[j];
-                i += mx_strlen(old_str) + 3;
+                y += mx_strlen(old_str) + 2;
             }
         }
-        (*new_str)[i++] = line[y];
+        else if (line[y]) {
+            (*new_str)[i++] = line[y];
+        }
     }
 }
 
@@ -89,9 +96,12 @@ char *mx_ex_param(char *line) {
             ex_join(line, result, &res);
         }
     }
-    else if (count == -1)
+    else if (count == -1) {                              // echo ${SHLVL} ${HOME} ${LOGNAME} ${USR} ${TERM} ; exit
+        mx_strdel(&line);
         return NULL;
-    else 
+    }
+    else {
         res = line;
+    }
     return res;
 }

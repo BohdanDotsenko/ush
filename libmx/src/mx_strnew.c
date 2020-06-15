@@ -2,14 +2,13 @@
 
 char *mx_strnew(const int size) {
 	char* str = 0;	
+
 	if (size < 0) 
-	{
+		return NULL; 
+	str = (char *)malloc(size * sizeof(char));
+	if (str == NULL)
 		return NULL;
-	}
-	str = (char *) malloc((size + 1) * sizeof(char));
-	for (int i = 0; i < size + 1; i++) {
+	for (int i = 0; i < size; i++) 
 		str[i] = '\0';
-	}
 	return str;
 }
-

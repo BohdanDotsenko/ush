@@ -31,8 +31,10 @@ static void tilda_plus(char **line) {
 static void tilda(char **line) {
     char *home = getenv("HOME");
     char *res = mx_strnew(mx_strlen(home) + mx_strlen((*line)) - 2);
+    res = NULL;
     int r = 0;
 
+mx_printstr(home);
     if (home != NULL) {
         mx_ex_join(&res, home, &r); 
         for (int i = 1; (*line)[i]; i++)
@@ -61,11 +63,11 @@ void mx_tilda(char **s) {
    // int value = 0;
 
     if ((*s)[0] == '~') {
-        if (!mx_strncmp("~-/", (*s), 3) || !mx_strncmp("~-\n", (*s), 3))
+        if (!mx_strncmp("~-/", (*s), 3) || !mx_strncmp("~-", (*s), 3))
             tilda_minus(s);
-        else if (!mx_strncmp("~+/", (*s), 3) || !mx_strncmp("~+\n", (*s), 3))
+        else if (!mx_strncmp("~+/", (*s), 3) || !mx_strncmp("~+", (*s), 3))
             tilda_plus(s);
-        else if (!mx_strncmp("~/", (*s), 2) || !mx_strncmp("~\n", (*s), 2))
+        else if (!mx_strncmp("~/", (*s), 2) || !mx_strncmp("~", (*s), 2))
             tilda(s);
         else if (mx_get_char_index((*s), '/'))
             tilda_user(s);

@@ -1,20 +1,21 @@
 #include "ush.h"
 
-static t_variables *create_node(void *name, void *value) {
+static t_variables *create_node(char *name, char *value) {
     t_variables *node =  (t_variables *)malloc(sizeof(t_variables));
-
     node->name = strdup(name);
+
     if(!value)
         node->value = strdup("");
-    else
+    else {
         node->value = strdup(value);
+    }
     node->next = NULL;
     return node;
 }
 
 void mx_push_variable(t_variables **list, void *name, void *value) {
-    t_variables *tmp;
-    t_variables *p;
+    t_variables *tmp = NULL;
+    t_variables *p = NULL;
 
     if (!list)
         return;
@@ -27,8 +28,9 @@ void mx_push_variable(t_variables **list, void *name, void *value) {
         return;
     }
     else {
-        while (p->next != NULL)  // Find Null-node
+        while (p->next != NULL){ // Find Null-node  
             p = p->next;
+        }
         p->next = tmp;
     }
 }

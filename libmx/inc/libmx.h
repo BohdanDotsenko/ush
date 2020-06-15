@@ -5,9 +5,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <wchar.h>
-//#include <stdio.h> 
 #include <fcntl.h>
-//#include <string.h>
 
 void mx_swap_str_ptrs(char **arg1, char **arg2);
 bool mx_isspace(int c);
@@ -57,6 +55,8 @@ char **mx_strsplit(const char *s, char c);
 char *mx_strjoin(const char *s1, const char *s2);
 int mx_read_line(char **lineptr, size_t buf_size, char delim, const int fd);
 char *mx_replace_substr(const char *str, const char *sub, const char *replace);
+
+
 
 // Memory pack
 
