@@ -91,7 +91,7 @@ static char **mx_init_builtin() {
 }
 
 void mx_init_shell(t_shell *shell) {
-    setenv("PWD", getcwd(NULL, 0), 0); // инициализация pwd
+    setenv("PWD", getcwd(NULL, 0), 1); // инициализация pwd
     shell->env = environ;
     shell->pwd = get_pwd();
     shell->variables = get_variables();

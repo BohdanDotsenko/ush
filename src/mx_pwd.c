@@ -25,11 +25,14 @@ int mx_pwd(st_launch *l_inf) {
         
     }
     else {
-        pwd = getenv("PWD");
-        mx_printstr(pwd);
-        if (pwd)
+        if (getenv("PWD")) {
+            pwd = getenv("PWD");
+            mx_printstr(pwd);
+        }
+        else 
+            mx_printstr(getcwd(NULL, 0));
             mx_printchar('\n');
         return 1;
     }
-    return 1;
+    return 0;
 }

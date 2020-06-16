@@ -83,6 +83,8 @@ static void print_hex(const char *str, int *j) {
 
 static void print_flag_e(int argc, int i, char **argv) {
     for (; i < argc; i++) { 
+        if (strcmp(argv[i], "\0") == 0)
+            i++;
         for (int j = 0; argv[i] && argv[i][j] != '\0'; j++) {
             if (argv[i][j] == '\\') { 
                 if (is_backslash_char(argv[i][j + 1]) == true) { 
@@ -100,10 +102,12 @@ static void print_flag_e(int argc, int i, char **argv) {
             }
             mx_printchar(argv[i][j]);
         }
-        if (argv[i + 1] && argv[i + 1][0] != '\0')
+        if (argv[i + 1] && argv[i][0] != '\0')
             mx_printchar(' ');
     }
 }
+
+
 
 int mx_echo(char **argv) { // to many functions in file
     bool flags[3] = {false}; // 0 is -n, 1 is -E, 2 is -e
@@ -121,7 +125,7 @@ int mx_echo(char **argv) { // to many functions in file
     else 
         while (i < argc) {
             mx_printstr(argv[i++]);
-            if (i != argc)
+            if (i != argc && argv[i][0] != '\0')
                 mx_printchar(' ');
         }
     if (flags[0] == false) 

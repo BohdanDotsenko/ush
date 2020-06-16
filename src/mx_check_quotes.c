@@ -13,7 +13,7 @@ int mx_check_quotes(char *line, char delim) {
     int i = 0;
 
 
-    for (; line[i]; i++) {   
+    for (; line[i]; i++) { 
         if (line[i] == '\\' && line[i+1] == '\'') {
             i += 1;
             continue;

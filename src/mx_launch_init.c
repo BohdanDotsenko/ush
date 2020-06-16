@@ -59,8 +59,8 @@ st_launch *mx_launch_init(char *cmd, t_shell *shell) {
 // create_arr_args
     tokensize(cmd, &command, 64, 0);
     mx_open_doll_trim_quotes(&command);
+    
     l_inf->cmd_arr = command;
-//find cmd 
     if (l_inf->cmd_arr)
         mx_check_builtin(l_inf, shell); // 1 = builtin
     // add free alocated memmory because builtin already executed.

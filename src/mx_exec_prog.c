@@ -22,7 +22,7 @@ static void print_error(st_launch *l_inf) {
         mx_printerr(l_inf->cmd_arr[0]);                                           
         mx_printerr(": Is a directory\n");                                        
     }                                                                             
-    else if (errno == ENOENT) {                                                   
+    else if (errno == ENOENT || l_inf->cmd_arr[0] != NULL) {                                                   
         mx_printerr("ush: command ");                                             
         mx_printerr(l_inf->cmd_arr[0]);                                           
         mx_printerr(" not found\n");                                              

@@ -16,18 +16,20 @@ static char *open_dollar(char *old_str) {
     int i = 0;
 
     for (; alphabet(old_str[i]) == 1; i++);
-    env = mx_strnew(i);
+    env = mx_strnew(i + 1);
     for (int i = 0; alphabet(old_str[i]) == 1; i++) {
         env[i] = old_str[i];
     }
     if (env) {
-        resul_env = getenv(env);
+        resul_env = getenv(old_str);
         if (resul_env != NULL) {
-            return_env = mx_three_to_one(mx_strtrim(resul_env), " ", mx_strtrim(&old_str[i]));
+            return_env = mx_three_to_one(mx_strtrim(resul_env), "", mx_strtrim(&old_str[i]));
             mx_strdel(&env);
             return return_env;
         }
     }
+    if (strcmp(old_str, "?") !=0)
+        return "\0";
     return old_str;
 }
 
@@ -39,7 +41,7 @@ char *mx_dollar(char *line) {
 
     if (line && mx_strlen(line) > 1) {
         count = mx_check_quotes(line, '$');
-
+   // if (line[count] &&count > 0 && line[count + 1] != '{') {///
         if (count == 100)
             return line;
         if (count >= 0) {
@@ -55,6 +57,7 @@ char *mx_dollar(char *line) {
                 return full_str;
             }
         }
+   // }
     }
     return line;
 }

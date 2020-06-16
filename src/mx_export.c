@@ -4,7 +4,7 @@ int mx_export(st_launch *l_inf) {
     char **export;
     char *var = NULL;
     char *val = NULL;
-    
+
     for (int i = 1; l_inf->cmd_arr[i]; i++) {
         if (mx_get_char_index(l_inf->cmd_arr[i], '=') == -1)
             return 0;

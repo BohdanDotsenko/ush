@@ -36,16 +36,6 @@ void mx_open_doll_trim_quotes(char ***command) {
     int kk = 0;
     char *str;
 
-    // for (int k = 0; (*command)[k]; k++) {
-    //     int flag = 0;
-    //     if (flag == 0 && mx_strtrim((trim_dquotes((*command)[k], '"')))) {
-    //         str = mx_strtrim((trim_dquotes((*command)[k], '"')));
-    //         flag += 1;
-    //     }
-    //     else {
-    //         str = mx_strtrim((trim_dquotes((*command)[k], '\'')));
-    //     }
-
      for (int k = 0; (*command)[k]; k++) {
         if ((*command)[k][0] && (*command)[k][0] == '\'' && mx_strtrim((trim_dquotes((*command)[k], '\'')))) {
             str = mx_strtrim((trim_dquotes((*command)[k], '\'')));
@@ -54,22 +44,13 @@ void mx_open_doll_trim_quotes(char ***command) {
             str = mx_strtrim((trim_dquotes((*command)[k], '"')));
         }
 
-
-
-
         mx_strdel(&(*command)[k]);
         kk = 0;
         check_dollar(str, &kk);
         while (kk) {
             char *tmp = NULL;
             tmp = mx_dollar(str);////////NEWs
-            // mx_printstr(tmp);
-            //mx_printchar('\n');
-            //mx_strdel(&cmd);
             str = mx_strdup(tmp);
-            //mx_strdel(&tmp);
-            //mx_printstr(cmd);
-            //mx_printchar('\n');
             kk--;
         }
         (*command)[k] = mx_strdup(str);

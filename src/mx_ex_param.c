@@ -56,7 +56,6 @@ static char *len_par(char *line, int *len) {
                 if (param && getenv(param))
                     (*len) += mx_strlen(getenv(param));
                 else if (!getenv(param)) {
-                    //char *tt = mx_strdup(line[mx_strlen(param) + i]);
                     continue;
                 }
                 else 

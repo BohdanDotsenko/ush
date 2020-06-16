@@ -37,7 +37,6 @@ static char includes_link(char *destination) {
 static int change_dir(st_launch *l_inf, char *path) {
     char *link = NULL;
     if (!chdir(path)) {
-        if (getenv("OLDPWD") && getenv("PWD") && strcmp(getenv("OLDPWD"), getenv("PWD")) != 0)
             setenv("OLDPWD", getenv("PWD"), 1);
         if (getcwd(NULL, 0))
             setenv("PWD", getcwd(NULL, 0), 1);
